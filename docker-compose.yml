@@ -1,0 +1,25 @@
+version: "3"
+services:
+  app:
+    container_name: app
+    restart: always
+    networks:
+      - questdb
+    build:
+      context: .
+      dockerfile: Dockerfile
+  questdb:
+    container_name: questdb
+    image: questdb/questdb
+    ports:
+      - "9000:9000"
+      - "9009:9009"
+      - "8812:8812"
+      - "9003:9003"
+    networks:
+      - "questdb"
+    volumes:
+      - ./data/db:/root/.questdb/db
+
+networks:
+  questdb:
