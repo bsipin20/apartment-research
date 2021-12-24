@@ -1,8 +1,10 @@
-requirements.txtbeautifulsoup4==4.10.0
+beautifulsoup4==4.10.0
 certifi==2021.10.8
 charset-normalizer==2.0.9
 dataclasses==0.6
 idna==3.3
+geopy
+numpy
 python-craigslist==1.1.4
 requests==2.26.0
 six==1.16.0

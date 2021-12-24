@@ -1,83 +1,70 @@
 from dataclasses import dataclass
 from collections import namedtuple
 import math
+import time
+import socket
 
 from craigslist import CraigslistHousing
 import geopy.distance
 
-import matplotlib.path as mplPath
+#import matplotlib.path as mplPath
 import numpy as np
 
 from re import sub
 from decimal import Decimal
+from contextlib import contextmanager
 
-Coordinate = namedtuple('Coordinate', ['x','y'])
+        conn.sendall(sendable_data(a + b))
 
-class SearchArea:
+import socket
+from contextlib import contextmanager
 
-    def __init__(self, x, y):
-        self.ref = Coordinate(x=x, y=y)
-        self.input_coordinates = []
-        self.input_coordinates.append(self.ref)
-        self.norm_coords = []
+@contextmanager
+def socketcontext(*args, **kw):
+    s = socket.socket(*args, **kw)
+    try:
+        yield s
+    finally:
+        s.close()
 
-    def add(self, x, y):
-        self.input_coordinates.append(Coordinate(x=x, y=y))
-        
-    def dist_between(self, x, y):
-        return math.sqrt((self.ref.x - x)**2 + (self.ref.y - y)**2)
-        
-    def create_polyogon(self):
-        norm_coords = []
-        for coord in self.input_coordinates:
-            norm_dist = math.sqrt((self.ref.x - coord.x)**2 + (self.ref.y - coord.y)**2)
-            norm_coords.append(norm_dist)
-        poly = []
-        mod = len(norm_coords)
-        for index, value in enumerate(norm_coords):
-            poly.append([norm_coords[index%mod], norm_coords[(index+1)%mod]])
-
-        self.bb_path = mplPath.Path(np.array(poly))
-
-    def __contains__(self, coord):
-        return self.bb_path.contains_point((self.ref.x - coord[0], self.ref.y - coord[1]))
-
-
-# You can get an approximate amount of results with the following call:
-#print(cl_h.get_results_approx_count())
-
-def determine_geo_location(coords1, coords2) -> int:
-    return geopy.distance.distance(coords1, coords2).miles
-
-
-def search_craigslist_housing(site: str, category: str = 'housing') -> CraigslistHousing:
-    cl_h = CraigslistHousing(site=site,
-                             category='housing',
-                             filters={'min_price': 1000,
-                                      'max_price': 4000,
-                                      'min_bedrooms': 2,
-                                      'max_bedrooms': 2})
-
-    for result in cl_h.get_results(sort_by='newest', geotagged=True):
-        yield result
-
-
-def price_convert(price):
-    value = Decimal(sub(r'[^\d.]', '', price))
-    return value
-
-def calculate_subway(apartment_coord):
-    subways = {"grove_street": Coordinate(x=40.719606, y=-74.050522),
-    "newport": Coordinate(x=40.726676, y=-74.034767),
-    "journal_square": Coordinate(x=40.7346, y=-74.0632)}
-    d_ = {}
-    for key, value in subways.items():
-        dist = geopy.distance.distance((value.x, value.y), (apartment_coord[0], apartment_coord[1])).miles
-        d_[key] = dist
-    return d_
-        
-
+#with socketcontext(socket.AF_INET, socket.SOCK_DGRAM) as s:
 def main():
+
+    HOST = 'questdb'
+    PORT = 9009
+    # For UDP, change socket.SOCK_STREAM to socket.SOCK_DGRAM
+    #time.sleep(30)
+    filename = 'results.csv'
+    file_ = open(filename,'w')
+#    with socketcontext(socket.AF_INET, socket.SOCK_DGRAM) as s:
+    #    s.connect((HOST, PORT))
+    for result in search_craigslist_housing("newjersey"):
+        print(result)
+        #file_.write(result)
+   #file_.write('hey')
+            #value = price_convert(result['price'])
+            #d_ = calculate_subway(result['geotag'])
+            #newport = d_['newport']
+            #id_ = result['id']
+            #url = result['url']
+            #record = b'test2,id={id_},rent={value},url={url},distance={newport},timestamp={time.time_ns())).encode()}'
+
+        #    s.sendall((record))
+            #  except socket.error as e:
+   #     print("Got error: %s" % (e))
+
+#        sock.close()
+
+#    try:
+#      sock.connect((HOST, PORT))
+#      # Single record insert
+#      # Omitting the timestamp allows the server to assign one
+#      sock.sendall(('trades,name=server_timestamp value=12.4\n').encode())
+#      # Streams of readings must be newline-delimited
+#      sock.sendall(('trades,name=ilp_stream_1 value=12.4\ntrades,name=ilp_stream_2 value=11.4\n').encode())
+
+
+
     #coord1 = (40.732896, -74.079393)
     #coord2 = (40.762678, -74.020342)
     #coord3 = (40.716635, -74.028581)
@@ -89,15 +76,13 @@ def main():
     #search.create_polyogon()
     #grove_street = (40.719074, -74.050552)
 
-    for result in search_craigslist_housing("newjersey"):
-        value = price_convert(result['price'])
-        d_ = calculate_subway(result['geotag'])
 
 #        str_ = "%s, %s" % (dist, value)
 #        print(result)
 #        print(str_)
 
         #print(result)
+
 
 if __name__ == "__main__":
     main()

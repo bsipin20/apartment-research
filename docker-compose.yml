@@ -8,6 +8,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    #TODO depends_on in right place
+    depends_on:
+      - "questdb"
   questdb:
     container_name: questdb
     image: questdb/questdb
