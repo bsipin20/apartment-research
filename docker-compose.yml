@@ -7,7 +7,6 @@ services:
       - questdb
     build:
       context: .
-      dockerfile: Dockerfile
   questdb:
     container_name: questdb
     image: questdb/questdb
