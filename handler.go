@@ -8,8 +8,6 @@ import (
 	"github.com/jackc/pgx/v4"
 )
 
-
-
 func Home(w http.ResponseWriter, r *http.Request){
 	fmt.Println("hit home page")
 }
