@@ -10,7 +10,10 @@ US_ADDR = { 'AddressNumber': 'number',
             'ZipCode': 'zip_code',
             'StreetNamePostType': 'street_type'}
 
-def stuff(usaddress):
+HOST = 'questdb'
+PORT = 9009
+
+def clear(usaddress):
     results = {}
     number = None
     street = None
@@ -25,14 +28,73 @@ def stuff(usaddress):
             
 def parse_address(addr):
     addr = usaddress.parse(addr)
-    result = stuff(addr)
+    result = clear(addr)
     return result
 
 def parse_price(price_string):
     price = re.sub('\D', '', 'aas30dsa20')
     return int(price)
 
+def parse_where(where):
+    if 'bay ridge' in where:
+        return 'bay ridge'
+    elif 'gowanus' in where:
+        return 'gowanus'
+    elif 'windsor' in where:
+        return 'windsor terrace'
+    elif 'flatbush' in where:
+        return 'flatbush'
+    elif 'boreum' in where:
+        return 'boreum hill'
+    elif 'lefferts' in where:
+        return 'prospect lefferts gardens'
+    elif 'prospect heights' in where:
+        return 'prospect heights'
+    elif 'prospect park' in where:
+        return 'prospect park'
+    elif 'park slope' in where:
+        return 'park slope'
+    elif 'south slope' in where:
+        return 'south slope'
+    elif 'bedford' in where:
+        return 'bedford-stuyvesant'
+    elif 'greenpoint' in where:
+        return 'greenpoint'
+    elif 'williamsburg' in where:
+        return 'williamsburg'
+    elif 'dumbo' in where:
+        return 'dumbo'
+    elif 'yonkers' in where:
+        return 'yonkers'
+    elif 'weeksvile' in where:
+        return 'weeksville'
+    elif 'woodside' in where:
+        return 'woodside'
+    elif 'woodlawn' in where:
+        return 'woodlawn'
+    elif 'yellowstone' in where:
+        return 'yellowstone'
+    elif 'yorktown' in where:
+        return 'yorktown'
+    elif 'staten' in where:
+        return 'staten island'
+    elif 'borough park' in where:
+        return 'borough park'
+    elif 'corona' in where:
+        return 'corona'
+    elif 'queens' in where:
+        return 'queens'
+    else:
+        return 'notparsed'
 
+def parse_location(result):
+    try:
+        lat = float(result[0])
+        lon = float(result[1])
+    except:
+        lat = 0.0
+        lon = 0.0
+    return lat, lon
 
 def create_message(table_name: str,
                    symbols: typing.Dict[str, typing.Any] = None,
@@ -62,7 +124,7 @@ def create_message(table_name: str,
 
 
 def send_tcp_messages(*messages: typing.List[str]) -> bool:
-    host, port = 'questdb', 9009
+    host, port = HOST, PORT
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.connect((host, port))
@@ -72,25 +134,5 @@ def send_tcp_messages(*messages: typing.List[str]) -> bool:
             return True
     except Exception as err:
         print(f'Failed to send tcp messages: {err}')
+        print(messages)
         return False
-
-
-def send_udp_messages(*messages: typing.List[str]) -> bool:
-    host, port = '232.1.2.3', 9009
-    try:
-        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
-            for message in messages:
-                sock.sendto(message.encode('utf-8'), (host, port))
-                print(f'Sent udp: {message}', end='')
-            return True
-    except Exception as err:
-        print(f'Failed to send udp messages: {err}')
-        return False
-
-if __name__ == "__main__":
-    table_name = "tester1"
-    
-    send_tcp_messages(create_message(
-        table_name, symbols={'proto': 'tcp'}, fields={'verb': 'select'}))
-
-    

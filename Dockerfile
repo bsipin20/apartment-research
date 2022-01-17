@@ -8,4 +8,6 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD ["python3", "bin", "run.py"]
+RUN chmod +x wait-for-it.sh
+
+#ENTRYPOINT ["bin/sh", "bin/update.sh"]

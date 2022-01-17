@@ -48,6 +48,8 @@ def parse_location(where):
         return 'dumbo'
     elif 'yonkers' in where:
         return 'yonkers'
+    elif 'weeksvile' in where:
+        return 'weeksville'
     elif 'woodside' in where:
         return 'woodside'
     elif 'woodlawn' in where:
@@ -71,7 +73,6 @@ def main():
     path = 'data/brooklyn.txt'
     file_ = open(path,'r')
 
-
     #df = pd.DataFrame(rows_list)  
     rows_list = []
 
@@ -86,6 +87,7 @@ def main():
             except:
                 lat = 0.0
                 lon = 0.0
+
             posting['datetime'] = posting['datetime'].split(" ")[0]
             posting['where'] = posting['where'].rstrip()
             posting['location'] = parse_location(posting['where'].lower())
@@ -95,12 +97,11 @@ def main():
             price = int(posting['price'])
             count += 1
 
-            msg = helpers.create_message("postings4", symbols = {
-                                                                        'id': str(posting['id']),
-                                                                        'last_updated': str(last_updated),
-                                                                        'date': str(posting['datetime']),
-                                                                        'place': str(posting['location'])},
-                                                                        fields= {'lon': lon, 'lat': lat,'price': price})
+            msg = helpers.create_message("postings4", symbols = { 'id': str(posting['id']),
+                                                                  'last_updated': str(last_updated),
+                                                                  'date': str(posting['datetime']),
+                                                                  'place': str(posting['location'])},
+                                                      fields= {'lon': lon, 'lat': lat,'price': price})
                                             
             helpers.send_tcp_messages(msg)
 
