@@ -32,7 +32,7 @@ def parse_address(addr):
     return result
 
 def parse_price(price_string):
-    price = re.sub('\D', '', 'aas30dsa20')
+    price = ''.join(ch for ch in price_string if ch.isdigit())
     return int(price)
 
 def parse_where(where):
