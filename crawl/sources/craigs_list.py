@@ -13,13 +13,12 @@ from crawl import helpers
 Coordinate = namedtuple('Coordinate', ['x','y'])
 
 def search_craigslist_housing(site: str, area, category: str = 'apa'):
-
         yield result
 
 def main(site = "newyork",
          area = "brk",
          category = 'apa',
-         num_postings = 200):
+         num_postings = 500):
 
     count = 0
     cl_h = CraigslistHousing(site=site, area = area,
