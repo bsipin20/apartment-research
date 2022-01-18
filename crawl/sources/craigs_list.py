@@ -19,7 +19,7 @@ def search_craigslist_housing(site: str, area, category: str = 'apa'):
 def main(site = "newyork",
          area = "brk",
          category = 'apa',
-         num_postings = 5):
+         num_postings = 200):
 
     count = 0
     cl_h = CraigslistHousing(site=site, area = area,
